@@ -1,5 +1,5 @@
 <h1 align="center" height="128">Code for lab on TiOPO</h1>
-```
+
         static int GenNum()
         {
             Random random = new Random();
@@ -15,6 +15,6 @@
             }
             return number;
         }
-```
+
 
 Here my menu: 
