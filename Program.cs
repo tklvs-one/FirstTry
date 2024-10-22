@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Net.Security;
+using System.Reflection.Metadata;
+using System.Text;
 using System.Text.Unicode;
 
 namespace ForGreatGit
@@ -7,10 +11,167 @@ namespace ForGreatGit
     {
         static void Main(string[] args)
         {
-            Console.Write("Введите ваше имя?: ");
-            var userName = Console.ReadLine();
-            Console.WriteLine(userName);
-            PrintLeader();
+            firstMenu(); 
+        }
+
+        static void firstMenu()
+        {
+            Console.WriteLine("Добро пожаловать в игру, аналогичную worldly - numbly! \n" +
+            "1. Авторизироваться?\n" +
+            "2. Зарегистрироваться?\n" + 
+            "3. Выход"
+            );
+            int input = Convert.ToInt32(Console.ReadLine()); 
+
+            switch(input)
+            {
+                case 1: 
+                    Auth(); 
+                    break; 
+                case 2: 
+                    Registration(); 
+                    break; 
+                case 3: 
+                    Environment.Exit(0); 
+                    break; 
+            }
+
+
+        }
+
+        static void Auth()
+        {
+            string login; 
+            string password;
+            string pathToUserData = "users.txt"; 
+
+            if (!File.Exists(pathToUserData))
+            {
+                Console.WriteLine("Такого пользователя не существует, зарегистрируйтесь!");
+                Registration(); 
+            }
+
+            while (true)
+            {
+                Console.Write("Введите ваш логин: "); 
+                login = Console.ReadLine(); 
+
+                var users = File.ReadAllLines(pathToUserData);
+                bool userExists = false;
+                string userPassword = "";
+
+                foreach (var user in users)
+                {
+                    string userLogin = user.Split(':')[0];
+                    if (userLogin == login)
+                    {
+                        userPassword = user.Split(':')[1];
+                        userExists = true;
+                        break;
+                    }
+                }
+
+                if (!userExists)
+                {
+                    Console.WriteLine("Такого пользователя не существует, зарегистрируйтесь!");
+                    firstMenu();
+                }
+
+                while (true)
+                {
+                    Console.Write("Ввведите ваш пароль: "); 
+                    password = Console.ReadLine(); 
+
+                    if (password == userPassword)
+                    {
+                        Console.WriteLine("Авторизация успешна, вход в программу");
+                        GameMenu(login, password); 
+                    }
+                    else
+                    {
+                        Console.WriteLine("Неправильный пароль, попробуйте еще раз.");
+                    }
+                }
+            }
+        }
+        static void Registration()
+        {
+            string login; 
+            string password;
+            string pathToUserData = "users.txt"; 
+
+            if (!File.Exists(pathToUserData))
+            {
+                File.Create(pathToUserData).Dispose();
+            }
+
+            while (true)
+            {
+                Console.Write("Введите ваш логин: "); 
+                login = Console.ReadLine(); 
+
+                var users = File.ReadAllLines(pathToUserData);
+                bool userExists = false;
+
+                foreach (var user in users)
+                {
+                    string userLogin = user.Split(':')[0];
+                    if (userLogin == login)
+                    {
+                        userExists = true;
+                        break;
+                    }
+                }
+
+                if (userExists)
+                {
+                    Console.WriteLine("Такой пользователь уже существует, попробуйте другой логин.");
+                }
+                else
+                {
+                    Console.Write("Введите ваш пароль: "); 
+                    password = Console.ReadLine(); 
+
+                    File.AppendAllText(pathToUserData, $"{login}:{password}" + Environment.NewLine);
+                    Console.WriteLine("Регистрация успешна, теперь вы можете авторизоваться.");
+                    firstMenu();
+                    
+                }
+            }
+        }
+
+        static void GameMenu(string login, string password)
+        {
+            Console.WriteLine($"Добро пожаловать, {login}\n" + 
+            "1. Начать игру\n" + 
+            "2. Ваши игры\n" + 
+            "3. Таблица лидеров\n" + 
+            "4. Выход"
+            ); 
+
+            int input = Convert.ToInt32(Console.ReadLine()); 
+
+            switch(input)
+            {
+                case 1: 
+                    Game(login, password); 
+                    break; 
+                case 2: 
+                    PrintPlayerResults(login, password); 
+                    break; 
+                case 3: 
+                    printLeaderBord(login, password); 
+                    break; 
+                case 4: 
+                    Environment.Exit(0); 
+                    break; 
+            }
+
+            
+        }
+
+        static void Game(string login, string password)
+        {
 
             var num = GenNum();
 
@@ -48,10 +209,9 @@ namespace ForGreatGit
                 {
                     Console.WriteLine("Поздравляем Вы угадали число!");
                     attempts++;
-                    SaveResult(userName, attempts);
-                    var place = GetPlace(userName, attempts);
-                    Console.WriteLine($"Поздравляем, ваше место - {place}!");
-                    return; 
+                    SaveResult(login, attempts);
+                    GetPlace(login);
+                    GameMenu(login, password); 
                     
                 }
 
@@ -101,62 +261,157 @@ namespace ForGreatGit
             return (guessedDig, guessedInPlace);
         }
 
-        static void SaveResult(string userName, int attempts)
+        static void SaveResult(string login, int attempts)
         {
-            var filePath = "results.txt";
-            var result = $"{userName} - {attempts} попыток";
+            var resultPath = "results.txt";
+            var result = $"{login}:{attempts}";
 
-            if (!File.Exists(filePath))
+            if (!File.Exists(resultPath))
             {
-                File.Create(filePath);//.Close();
+                File.Create(resultPath);
             }
 
-            File.AppendAllText(filePath, result + Environment.NewLine, Encoding.GetEncoding("Windows-1251"));
+            string[] existingResults = File.ReadAllLines(resultPath); 
+            List<string> updatedResults = new List<string>(); 
 
-            Console.WriteLine($"Вы прошли за {attempts} попыток"); 
-            Console.WriteLine("Результат сохранен в файле results.txt");
-        }
+            bool existingResultsFound = false; 
 
-        static void PrintLeader()
-        {
-            var filePath = "results.txt";
-            if (!File.Exists(filePath))
+            foreach (string existingResult in existingResults)
             {
-                Console.WriteLine("Лидерборд пуст.");
-                return;
-            }
-
-            var results = File.ReadAllLines(filePath);
-            var sortedResults = results.OrderBy(x => int.Parse(x.Split('-')[1].Trim().Split(' ')[0])).ToArray();
-
-            Console.WriteLine("Доска почета:");
-            for (var i = 0; i < sortedResults.Length; i++)
-            {
-                Console.WriteLine($"{i + 1}. {sortedResults[i]}");
-            }
-        }
-
-        static int GetPlace(string userName, int attempts)
-        {
-            var filePath = "results.txt";
-            if (!File.Exists(filePath))
-            {
-                return 1;
-            }
-
-            var results = File.ReadAllLines(filePath);
-            var sortedResults = results.OrderBy(x => int.Parse(x.Split('-')[1].Trim().Split(' ')[0])).ToArray();
-
-            for (var i = 0; i < sortedResults.Length; i++)
-            {
-                if (sortedResults[i].StartsWith(userName))
+                if (existingResult.StartsWith(login))
                 {
-                    return i + 1;
+                    string[] existingAttempts = existingResult.Split(':');
+                    string newAttempts = $"{existingAttempts[1].Trim()}|{attempts}";
+                    updatedResults.Add($"{login}:{newAttempts}");
+                    existingResultsFound = true;
+                }
+                else
+                {
+                    updatedResults.Add(existingResult);
                 }
             }
 
-            return sortedResults.Length + 1;
+             if (!existingResultsFound)
+            {
+                updatedResults.Add(result);
+            }
+
+
+            File.WriteAllText(resultPath, string.Join(Environment.NewLine, updatedResults) + Environment.NewLine);
+
+            Console.WriteLine($"Вы прошли за {attempts} попыток"); 
+            
         }
 
+        static List<(string, int)> makeLeaderBord()
+        {
+            string resultPath = "results.txt"; 
+
+            if (!File.Exists(resultPath))
+            {
+                Console.WriteLine("Файл результатов не существует.");
+                return new List<(string, int)>();
+            }
+
+            string[] results = File.ReadAllLines(resultPath); 
+            Dictionary<string, int> playerResults = new Dictionary<string, int>(); 
+
+            foreach (string result in results) 
+            {
+                string[] parts = result.Split(':');
+                string player = parts[0];
+                string[] attempts = parts[1].Split('|');
+
+                int bestResult = 1000000;
+
+                foreach (string attempt in attempts)
+                {
+                    int attemptValue = int.Parse(attempt.Trim());
+                    if (attemptValue < bestResult)
+                    {
+                        bestResult = attemptValue;
+                    }
+                }
+                playerResults[player] = bestResult;
+
+                
+            }
+
+            List<(string, int)> sortedPlayerResults = playerResults.OrderBy(x => x.Value).Select(x => (x.Key, x.Value)).ToList();
+            return sortedPlayerResults; 
+                
+            
+        }
+
+        static void printLeaderBord(string login, string password)
+        {
+            List<(string, int)> sortedPlayerResults = makeLeaderBord();
+            if (sortedPlayerResults.Count == 0) 
+            {
+                Console.WriteLine("Лидерборд пуст");
+            }
+            else 
+            {
+                Console.WriteLine("Лидерборд:");
+                int place = 1; 
+                foreach ((string, int) playerResult in sortedPlayerResults)
+                {
+                    Console.WriteLine($"{place}.{playerResult.Item1} победил за {playerResult.Item2} ходов!");
+                    place++; 
+                }
+            }
+            
+            GameMenu(login, password);
+        }
+
+        static void GetPlace(string login)
+        {
+            List<(string, int)> sortedPlayerResults = makeLeaderBord(); 
+            Console.WriteLine("Лидерборд:");
+            int place = 1; 
+            foreach ((string, int) playerResult in sortedPlayerResults)
+            {
+               if (playerResult.Item1 == login) 
+               {
+                Console.WriteLine($"Ваше место в лидерборде: {place}"); 
+                return; 
+               }
+               place++; 
+            }
+            Console.WriteLine("Вы не найдены в лидерборде.");
+        }
+
+        static void PrintPlayerResults(string login, string password)
+        {
+            string resultPath = "results.txt";
+
+            if (!File.Exists(resultPath))
+            {
+                Console.WriteLine("Файл результатов не существует.");
+                return;
+            }
+
+            string[] results = File.ReadAllLines(resultPath);
+
+            foreach (string result in results)
+            {
+                string[] parts = result.Split(':');
+                string player = parts[0];
+
+                if (player == login)
+                {
+                    string[] attempts = parts[1].Split('|');
+                    Console.WriteLine("Результаты игрока:");
+                    for (int i = 0; i < attempts.Length; i++)
+                    {
+                        Console.WriteLine($"Игра {i + 1}: {attempts[i]} попыток");
+                        Console.WriteLine("\n"); 
+                    }
+                    GameMenu(login, password);
+                }
+            }
+
+            Console.WriteLine("Игрок не найден в файлах результатов.");
+        }
     }
 }
