@@ -1,0 +1,14 @@
+c:\Users\Honor\Desktop\ForGreatGit\bin\Debug\net8.0\ForGreatGit.exe
+c:\Users\Honor\Desktop\ForGreatGit\bin\Debug\net8.0\ForGreatGit.deps.json
+c:\Users\Honor\Desktop\ForGreatGit\bin\Debug\net8.0\ForGreatGit.runtimeconfig.json
+c:\Users\Honor\Desktop\ForGreatGit\bin\Debug\net8.0\ForGreatGit.dll
+c:\Users\Honor\Desktop\ForGreatGit\bin\Debug\net8.0\ForGreatGit.pdb
+c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ForGreatGit.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ForGreatGit.AssemblyInfoInputs.cache
+c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ForGreatGit.AssemblyInfo.cs
+c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ForGreatGit.csproj.CoreCompileInputs.cache
+c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ForGreatGit.dll
+c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\refint\ForGreatGit.dll
+c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ForGreatGit.pdb
+c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ForGreatGit.genruntimeconfig.cache
+c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ref\ForGreatGit.dll
