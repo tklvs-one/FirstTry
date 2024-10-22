@@ -1,4 +1,5 @@
 <h1 align="center" height="128">Code for lab on TiOPO</h1>
+<h3 align="center">This code show us the game named "Numbly". But this lab in main meaning teach us how we can work with Git and GitHub</h3>
 
         static int GenNum()
         {
@@ -17,4 +18,5 @@
         }
 
 
-Here my menu: 
+Here my menu:</br>
+<img src="ForGit.png" height="300">
