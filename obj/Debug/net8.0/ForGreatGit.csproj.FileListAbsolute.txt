@@ -12,3 +12,4 @@ c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\refint\ForGreatGit.dll
 c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ForGreatGit.pdb
 c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ForGreatGit.genruntimeconfig.cache
 c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ref\ForGreatGit.dll
+c:\Users\Honor\Desktop\ForGreatGit\obj\Debug\net8.0\ForGreatGit.sourcelink.json
